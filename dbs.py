@@ -7,6 +7,7 @@
 weapons = {
 	0:    'bold',                   # Sploosh-o-matic
 	1:    'bold_neo',               # Neo Sploosh-o-matic
+	2:    'bold_7',                 # Sploosh-o-matic 7
 	10:   'wakaba',                 # Splattershot Jr.
 	11:   'momiji',                 # Custom Splattershot Jr.
 	12:   'ochiba',                 # Kensa Splattershot Jr.
@@ -14,6 +15,7 @@ weapons = {
 	21:   'sharp_neo',              # Neo Splash-o-matic
 	30:   'promodeler_mg',          # Aerospray MG
 	31:   'promodeler_rg',          # Aerospray RG
+	32:   'promodeler_pg',          # Aerospray PG
 	40:   'sshooter',               # Splattershot
 	41:   'sshooter_collabo',       # Tentatek Splattershot
 	42:   'sshooter_becchu',        # Kensa Splattershot
@@ -24,6 +26,7 @@ weapons = {
 	52:   '52gal_becchu',           # Kensa .52 Gal
 	60:   'nzap85',                 # N-ZAP '85
 	61:   'nzap89',                 # N-ZAP '89
+	62:   'nzap83',                 # N-ZAP '83
 	70:   'prime',                  # Splattershot Pro
 	71:   'prime_collabo',          # Forge Splattershot Pro
 	72:   'prime_becchu',           # Kensa Splattershot Pro
@@ -39,6 +42,7 @@ weapons = {
 	215:  'heroblaster_replica',    # Hero Blaster Replica
 	220:  'longblaster',            # Range Blaster
 	221:  'longblaster_custom',     # Custom Range Blaster
+	222:  'longblaster_necro',      # Grim Range Blaster
 	230:  'clashblaster',           # Clash Blaster
 	231:  'clashblaster_neo',       # Clash Blaster Neo
 	240:  'rapid',                  # Rapid Blaster
@@ -51,6 +55,7 @@ weapons = {
 	302:  'l3reelgun_becchu',       # Kensa L-3 Nozzlenose
 	310:  'h3reelgun',              # H-3 Nozzlenose
 	311:  'h3reelgun_d',            # H-3 Nozzlenose D
+	312:  'h3reelgun_cherry',       # Cherry H-3 Nozzlenose
 	400:  'bottlegeyser',           # Squeezer
 	401:  'bottlegeyser_foil',      # Foil Squeezer
 	1000: 'carbon',                 # Carbon Roller
@@ -66,12 +71,14 @@ weapons = {
 	1031: 'variableroller_foil',    # Foil Flingza Roller
 	1100: 'pablo',                  # Inkbrush
 	1101: 'pablo_hue',              # Inkbrush Nouveau
+	1102: 'pablo_permanent',        # Permanent Inkbrush
 	1110: 'hokusai',                # Octobrush
 	1111: 'hokusai_hue',            # Octobrush Nouveau
 	1112: 'hokusai_becchu',         # Kensa Octobrush
 	1115: 'herobrush_replica',      # Herobrush Replica
 	2000: 'squiclean_a',            # Classic Squiffer
 	2001: 'squiclean_b',            # New Squiffer
+	2002: 'squiclean_g',            # Fresh Squiffer
 	2010: 'splatcharger',           # Splat Charger
 	2011: 'splatcharger_collabo',   # Firefin Splat Charger
 	2012: 'splatcharger_becchu',    # Kensa Charger
@@ -85,10 +92,12 @@ weapons = {
 	2041: 'liter4k_scope_custom',   # Custom E-liter 4K Scope
 	2050: 'bamboo14mk1',            # Bamboozler 14 Mk I
 	2051: 'bamboo14mk2',            # Bamboozler 14 Mk II
+	2052: 'bamboo14mk3',            # Bamboozler 14 Mk III
 	2060: 'soytuber',               # Goo Tuber
 	2061: 'soytuber_custom',        # Custom Goo Tuber
 	3000: 'bucketslosher',          # Slosher
 	3001: 'bucketslosher_deco',     # Slosher Deco
+	3002: 'bucketslosher_soda',     # Soda Slosher
 	3005: 'heroslosher_replica',    # Hero Slosher Replica
 	3010: 'hissen',                 # Tri-Slosher
 	3011: 'hissen_hue',             # Tri-Slosher Nouveau
@@ -104,6 +113,7 @@ weapons = {
 	4002: 'splatspinner_becchu',    # Kensa Mini Splatling
 	4010: 'barrelspinner',          # Heavy Splatling
 	4011: 'barrelspinner_deco',     # Heavy Splatling Deco
+	4012: 'barrelspinner_remix',    # Heavy Splatling Remix
 	4015: 'herospinner_replica',    # Hero Splatling Replica
 	4020: 'hydra',                  # Hydra Splatling
 	4021: 'hydra_custom',           # Custom Hydra Splatling
@@ -113,6 +123,7 @@ weapons = {
 	4041: 'nautilus79',             # Nautilus 79
 	5000: 'sputtery',               # Dapple Dualies
 	5001: 'sputtery_hue',           # Dapple Dualies Nouveau
+	5002: 'sputtery_clear',         # Clear Dapple Dualies
 	5010: 'maneuver',               # Splat Dualies
 	5011: 'maneuver_collabo',       # Enperry Splat Dualies
 	5012: 'maneuver_becchu',        # Kensa Splat Dualies
@@ -129,6 +140,7 @@ weapons = {
 	6005: 'heroshelter_replica',    # Hero Brella Replica
 	6010: 'campingshelter',         # Tenta Brella
 	6011: 'campingshelter_sorella', # Tenta Sorella Brella
+	6012: 'campingshelter_camo',    # Tenta Camo Brella
 	6020: 'spygadget',              # Undercover Brella
 	6021: 'spygadget_sorella',      # Undercover Sorella Brella
 	6022: 'spygadget_becchu',       # Kensa Undercover Brella
@@ -321,6 +333,7 @@ headgears = {
 	21005: 'cap_of_legend',
 	21006: 'oceanic_hard_hat',
 	21007: 'workers_head_towel',
+	21009: 'sailor_cap',
 	24000: 'kyonshi_hat',
 	24001: 'lil_devil_horns',
 	24002: 'hockey_mask',
@@ -329,6 +342,10 @@ headgears = {
 	24005: 'new_years_glasses_dx',
 	24006: 'twisty_headband',
 	24007: 'eel_cake_hat',
+	24008: 'purple_novelty_visor',
+	24009: 'green_novelty_visor',
+	24010: 'orange_novelty_visor',
+	24011: 'pink_novelty_visor',
 	25000: 'squid_hairclip',
 	25001: 'samurai_helmet',
 	25002: 'power_mask',
@@ -743,6 +760,14 @@ shoes = {
 	21003: 'octoleet_boots',
 	21005: 'flipper_floppers',
 	21006: 'wooden_sandals',
+	23000: 'pearl_scout_lace_ups',
+	23001: 'pearlescent_squidkid_iv',
+	23002: 'pearl_punk_crowns',
+	23003: 'new_day_arrows',
+	23004: 'marination_lace_ups',
+	23005: 'rina_squidkid_iv',
+	23006: 'trooper_power_stripes',
+	23007: 'midnight_slip_ons',
 	25000: 'school_shoes',
 	25001: 'samurai_shoes',
 	25002: 'power_boots',

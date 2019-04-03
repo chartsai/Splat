@@ -37,7 +37,7 @@ try:
 	config_file.close()
 except (IOError, ValueError):
 	print("Generating new config file.")
-	config_data = {"api_key": "", "cookie": "", "user_lang": "", "session_token": ""}
+	config_data = {"cookie": "", "user_lang": "", "session_token": ""}
 	config_file = open(config_path, "w")
 	config_file.seek(0)
 	config_file.write(json.dumps(config_data, indent=4, sort_keys=True, separators=(',', ': ')))
@@ -48,7 +48,6 @@ except (IOError, ValueError):
 
 #########################
 ## API KEYS AND TOKENS ##
-API_KEY       = config_data["api_key"] # for stat.ink
 YOUR_COOKIE   = config_data["cookie"] # iksm_session
 try: # support for pre-v1.0.0 config.txts
 	SESSION_TOKEN = config_data["session_token"] # to generate new cookies in the future
@@ -158,8 +157,6 @@ def write_config(tokens):
 	config_file = open(config_path, "r")
 	config_data = json.load(config_file)
 
-	global API_KEY
-	API_KEY = config_data["api_key"]
 	global SESSION_TOKEN
 	SESSION_TOKEN = config_data["session_token"]
 	global YOUR_COOKIE
@@ -177,23 +174,6 @@ def load_json(bool):
 	url = "https://app.splatoon2.nintendo.net/api/results"
 	results_list = requests.get(url, headers=app_head, cookies=dict(iksm_session=YOUR_COOKIE))
 	return json.loads(results_list.text)
-
-def check_statink_key():
-	'''Checks if a valid length API key has been provided and, if not, prompts the user to enter one.'''
-
-	if API_KEY == "skip":
-		return
-	elif len(API_KEY) != 43:
-		new_api_key = ""
-		while len(new_api_key.strip()) != 43 and new_api_key.strip() != "skip":
-			if new_api_key.strip() == "" and API_KEY.strip() == "":
-				new_api_key = input("stat.ink API key: ")
-			else:
-				print("Invalid stat.ink API key. Please re-enter it below.")
-				new_api_key = input("stat.ink API key: ")
-			config_data["api_key"] = new_api_key
-		write_config(config_data)
-	return
 
 def set_language():
 	'''Prompts the user to set their game language.'''
@@ -258,52 +238,9 @@ def main():
 	if check_for_updates():
 		sys.exit(0)
 
-	#check_statink_key()
 	set_language()
 
-	parser = argparse.ArgumentParser()
-	parser.add_argument("-M", dest="N", required=False, nargs="?", action="store",
-						help="monitoring mode; pull data every N secs (default: 300)", const=300)
-	parser.add_argument("-r", required=False, action="store_true",
-						help="retroactively post unuploaded battles")
-	parser.add_argument("-s", required=False, action="store_true",
-						help="don't post scoreboard result image")
-	parser.add_argument("-t", required=False, action="store_true",
-						help="dry run for testing (won't post to stat.ink)")
-	parser.add_argument("--salmon", required=False, action="store_true",
-						help="uploads salmon run shifts")
-	parser.add_argument("-i", dest="filename", required=False, help=argparse.SUPPRESS)
-
-	parser_result = parser.parse_args()
-
-	is_s = parser_result.s
-	is_t = parser_result.t
-	is_r = parser_result.r
-	filename = parser_result.filename
-	salmon = parser_result.salmon
-
-	salmon_and_not_r = True if salmon and len(sys.argv) == 3 and "-r" not in sys.argv else False
-	salmon_and_more = True if salmon and len(sys.argv) > 3 else False
-	if salmon_and_not_r or salmon_and_more:
-		print("Can only use --salmon flag alone or with -r. Exiting.")
-		sys.exit(1)
-
-	if parser_result.N != None:
-		try:
-			m_value = int(parser_result.N)
-		except ValueError:
-			print("Number provided must be an integer. Exiting.")
-			sys.exit(1)
-		if m_value < 0:
-				print("No.")
-				sys.exit(1)
-		elif m_value < 60:
-				print("Minimum number of seconds in monitoring mode is 60. Exiting.")
-				sys.exit(1)
-	else:
-		m_value = -1
-
-	return m_value, is_s, is_t, is_r, filename, salmon
+	return -1, False, False, False, None, False
 
 def load_results(calledby=""):
 	'''Returns the data we need from the results JSON, if possible.'''
@@ -341,136 +278,6 @@ def load_results(calledby=""):
 			sys.exit(1)
 
 	return results
-
-def populate_battles(s_flag, t_flag, r_flag, debug):
-	'''Populates the battles list with SplatNet battles. Optionally uploads unuploaded battles.'''
-
-	results = load_results("populate")
-
-	battles = [] # 50 recent battles on splatnet
-
-	# if r_flag, check if there are any battles in splatnet that aren't on stat.ink
-	if r_flag:
-		print("Checking if there are previously-unuploaded battles...")
-		printed = False
-		url  = 'https://stat.ink/api/v2/user-battle?only=splatnet_number&count=100'
-		auth = {'Authorization': 'Bearer {}'.format(API_KEY)}
-		resp = requests.get(url, headers=auth)
-		statink_battles = json.loads(resp.text) # 100 recent battles on stat.ink. should avoid dupes
-
-	# always does this to populate battles array, regardless of r_flag
-	for i, result in reversed(list(enumerate(results))):
-		bn = int(result["battle_number"]) # get all recent battle_numbers
-		battles.append(bn) # for main process, don't upload any of the ones already in the file
-		if r_flag:
-			if bn not in statink_battles: # one of the splatnet battles isn't on stat.ink (unuploaded)
-				if not printed:
-					printed = True
-					print("Previously-unuploaded battles detected. Uploading now...")
-				post_battle(0, [result], s_flag, t_flag, -1, True if i == 0 else False, debug, False)
-
-	if r_flag and not printed:
-		print("No previously-unuploaded battles found.")
-
-	return battles
-
-def monitor_battles(s_flag, t_flag, r_flag, secs, debug):
-	'''Monitors JSON for changes/new battles and uploads them.'''
-
-	results = load_results("monitor") # make sure we can do it first. if error, throw it before main process
-
-	battles = populate_battles(s_flag, t_flag, r_flag, debug)
-	wins, losses, splatfest_wins, splatfest_losses, mirror_matches = [0]*5 # init all to 0
-
-	# main process
-	mins = str(round(old_div(float(secs), 60.0), 2))
-	if mins[-2:] == ".0":
-		mins = mins[:-2]
-	print("Waiting for new battles... (checking every {} minutes)".format(mins))
-
-	try:
-		while True:
-			for i in range(secs, -1, -1):
-				sys.stdout.write("Press Ctrl+C to exit. {} ".format(i))
-				sys.stdout.flush()
-				time.sleep(1)
-				sys.stdout.write("\r")
-			data = load_json(False)
-			results = data["results"]
-			for i, result in reversed(list(enumerate(results))): # reversed chrono order
-				if int(result["battle_number"]) not in battles:
-					if result["game_mode"]["key"] == "private" and custom_key_exists("ignore_private", True):
-						pass
-					else:
-						worl = "Won" if result["my_team_result"]["key"] == "victory" else "Lost"
-						splatfest_match = True if result["game_mode"]["key"] in ["fes_solo", "fes_team"] else False
-						if splatfest_match: # keys will exist
-							my_key = result["my_team_fes_theme"]["key"]
-							their_key = result["other_team_fes_theme"]["key"]
-							mirror_match = True if my_key == their_key else False
-						if worl == "Won": # Win
-							wins += 1
-							if splatfest_match and not mirror_match:
-								splatfest_wins += 1
-						else: # Lose
-							losses += 1
-							if splatfest_match and not mirror_match:
-								splatfest_losses += 1
-						if splatfest_match and mirror_match:
-							mirror_matches += 1
-						fullname = result["stage"]["name"]
-						mapname = translate_stages.get(translate_stages.get(int(result["stage"]["id"]), ""), fullname)
-						print("New battle result detected at {}! ({}, {})".format(datetime.datetime.fromtimestamp(int(result["start_time"])).strftime('%I:%M:%S %p').lstrip("0"), mapname, worl))
-					battles.append(int(result["battle_number"]))
-					# if custom key prevents uploading, we deal with that in post_battle
-					# i will be 0 if most recent battle out of those since last posting
-					post_battle(0, [result], s_flag, t_flag, secs, True if i == 0 else False, debug, True)
-	except KeyboardInterrupt:
-		print("\nChecking to see if there are unuploaded battles before exiting...")
-		data = load_json(False) # so much repeated code
-		results = data["results"]
-		foundany = False
-		for i, result in reversed(list(enumerate(results))):
-				if int(result["battle_number"]) not in battles:
-					if result["game_mode"]["key"] == "private" and custom_key_exists("ignore_private", True):
-						pass
-					else:
-						foundany = True
-						worl = "Won" if result["my_team_result"]["key"] == "victory" else "Lost"
-						splatfest_match = True if result["game_mode"]["key"] in ["fes_solo", "fes_team"] else False
-						if splatfest_match: # keys will exist
-							my_key = result["my_team_fes_theme"]["key"]
-							their_key = result["other_team_fes_theme"]["key"]
-							mirror_match = True if my_key == their_key else False
-						if worl == "Won": # Win
-							wins += 1
-							if splatfest_match and not mirror_match:
-								splatfest_wins += 1
-						else: # Lose
-							losses += 1
-							if splatfest_match and not mirror_match:
-								splatfest_losses += 1
-						if splatfest_match and mirror_match:
-							mirror_matches += 1
-						fullname = result["stage"]["name"]
-						mapname = translate_stages.get(translate_stages.get(int(result["stage"]["id"]), ""), fullname)
-						print("New battle result detected at {}! ({}, {})".format(datetime.datetime.fromtimestamp(int(result["start_time"])).strftime('%I:%M:%S %p').lstrip("0"), mapname, worl))
-					battles.append(int(result["battle_number"]))
-					post_battle(0, [result], s_flag, t_flag, secs, True if i == 0 else False, debug, True)
-		if foundany:
-			print("Successfully uploaded remaining battles.")
-		else:
-			print("No remaining battles found.")
-		w_plural = "" if wins == 1 else "s"
-		l_plural = "" if losses == 1 else "es"
-		print("%d win%s and %d loss%s this session." % (wins, w_plural, losses, l_plural))
-		if splatfest_wins != 0 or splatfest_losses != 0:
-			w_plural = "" if splatfest_wins == 1 else "s"
-			l_plural = "" if splatfest_losses == 1 else "es"
-			m_plural = "" if mirror_matches == 1 else "es"
-			print("{} win{} and {} loss{} against the other Splatfest team.".format(splatfest_wins, w_plural, splatfest_losses, l_plural))
-			print("{} mirror match{} against your Splatfest team.".format(mirror_matches, m_plural))
-		print("Bye!")
 
 def get_num_battles():
 	'''Returns number of battles to upload along with results JSON.'''
@@ -935,6 +742,7 @@ def post_battle(i, results, s_flag, t_flag, m_flag, sendgears, debug, ismonitor=
 		elapsed_time = 180 # turf war - 3 minutes in seconds
 	payload["start_at"] = results[i]["start_time"]
 	payload["end_at"]   = results[i]["start_time"] + elapsed_time
+	payload["duration"] = elapsed_time
 
 	###################
 	## SPLATNET DATA ##
@@ -1227,18 +1035,11 @@ def blackout(image_result_content, players):
 
 if __name__ == "__main__":
 	m_value, is_s, is_t, is_r, filename, salmon = main()
-	if salmon: # salmon run mode
-		salmonrun.upload_salmon_run(A_VERSION, YOUR_COOKIE, API_KEY, app_head, is_r)
-	else: # normal mode
-		if is_s:
-			from PIL import Image, ImageDraw
-		if m_value != -1: # m flag exists
-			monitor_battles(is_s, is_t, is_r, m_value, debug)
-		elif is_r: # r flag exists without m, so run only the recent battle upload
-			populate_battles(is_s, is_t, is_r, debug)
-		else:
-			n, results = get_num_battles()
-			for i in reversed(range(n)):
-				post_battle(i, results, is_s, is_t, m_value, True if i == 0 else False, debug)
-			if debug:
-				print("")
+	if is_s:
+		from PIL import Image, ImageDraw
+
+	n, results = get_num_battles()
+	for i in reversed(range(n)):
+		post_battle(i, results, is_s, is_t, m_value, True if i == 0 else False, debug)
+	if debug:
+		print("")
