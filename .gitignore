@@ -1,0 +1,6 @@
+__pycache__/
+.vs/
+data/
+
+battle*.txt
+config.txt
