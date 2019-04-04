@@ -13,7 +13,7 @@ from past.utils import old_div
 import os.path, argparse, sys
 import requests, json, time, datetime, random, re
 import msgpack, uuid
-import iksm, dbs, salmonrun
+import iksm, dbs
 from io import BytesIO
 from operator import itemgetter
 from distutils.version import StrictVersion
@@ -179,8 +179,9 @@ def set_language():
 	'''Prompts the user to set their game language.'''
 
 	if USER_LANG == "":
-		print("Default locale is en-US. Press Enter to accept, or enter your own (see readme for list).")
-		language_code = input("")
+		#print("Default locale is en-US. Press Enter to accept, or enter your own (see readme for list).")
+		#language_code = input("")
+		language_code = "en-US";
 
 		if language_code == "":
 			config_data["user_lang"] = "en-US"
@@ -1002,7 +1003,8 @@ def post_battle(i, results, s_flag, t_flag, m_flag, sendgears, debug, ismonitor=
 		else:
 			print("Battle #{}: skipping upload based on ignore_private key.".format(i+1))
 	else:
-		f = open("battle" + str(i) + ".txt", "w");
+		os.makedirs("Battles", exist_ok=True)
+		f = open(os.path.join("Battles", str(i) + ".txt"), "w");
 		f.write(json.dumps(payload).replace("'", "\'"));
 		f.close();
 
