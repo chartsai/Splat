@@ -235,8 +235,8 @@ def check_for_updates():
 def main():
 	'''I/O and setup.'''
 
-	if check_for_updates():
-		sys.exit(0)
+	#if check_for_updates():
+	#	sys.exit(0)
 
 	set_language()
 
@@ -1005,33 +1005,6 @@ def post_battle(i, results, s_flag, t_flag, m_flag, sendgears, debug, ismonitor=
 		f = open("battle" + str(i) + ".txt", "w");
 		f.write(json.dumps(payload).replace("'", "\'"));
 		f.close();
-
-def blackout(image_result_content, players):
-	'''Given a scoreboard image as bytes and players array, returns the blacked-out scoreboard.'''
-
-	scoreboard = Image.open(BytesIO(image_result_content)).convert("RGB")
-	draw = ImageDraw.Draw(scoreboard)
-
-	if "yes" in players:
-		if players[0] == "no": # is_me is no, so censor
-			draw.polygon([(719, 101), (719, 123), (849, 119), (849,  97)], fill="black")
-		if players[1] == "no":
-			draw.polygon([(721, 151), (721, 173), (851, 169), (851, 147)], fill="black")
-		if players[2] == "no":
-			draw.polygon([(723, 201), (723, 223), (853, 219), (853, 197)], fill="black")
-		if players[3] == "no":
-			draw.polygon([(725, 251), (725, 273), (855, 269), (855, 247)], fill="black")
-		if players[4] == "no":
-			draw.polygon([(725, 379), (725, 401), (855, 406), (855, 384)], fill="black")
-		if players[5] == "no":
-			draw.polygon([(723, 429), (723, 451), (853, 456), (853, 434)], fill="black")
-		if players[6] == "no":
-			draw.polygon([(721, 479), (721, 501), (851, 506), (851, 484)], fill="black")
-		if players[7] == "no":
-			draw.polygon([(719, 529), (719, 551), (849, 556), (849, 534)], fill="black")
-	else: # no "me" - this shouldn't happen. if it does, let's just not censor anything in case
-		pass
-	return scoreboard
 
 if __name__ == "__main__":
 	m_value, is_s, is_t, is_r, filename, salmon = main()
