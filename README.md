@@ -6,6 +6,16 @@
 1. 執行 Build/splat2txt.exe，並輸入要擷取的戰鬥數量(譬如，要列出最近打的15場，就輸入15)
 2. 執行 Build/txt2rec.exe，並將 Records 底下的所有檔案上傳
 
+如果你是 Mac 使用者：
+1. 安裝[homebrew](https://brew.sh/)
+2. 用homebrew安裝python: `$ brew install python`
+3. 用homebrew安裝pip: `$ brew install pip`
+4. 執行`pip install -r requirements.txt`
+5. 執行`python2 splat2txt.py`
+6. 執行`python2 txt2rec.py`，並將 Records 底下的所有檔案上傳
+
+註：用Python3也可以
+
 如果你不是 Windows 使用者：
 1. 參考源專案的說明安裝，或是拜託用 Windows 的隊友
 

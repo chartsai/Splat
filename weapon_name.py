@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 weapon_name_en = {
    0:'Sploosh-o-matic',
    1:'Neo Sploosh-o-matic',

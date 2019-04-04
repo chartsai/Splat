@@ -1003,7 +1003,10 @@ def post_battle(i, results, s_flag, t_flag, m_flag, sendgears, debug, ismonitor=
 		else:
 			print("Battle #{}: skipping upload based on ignore_private key.".format(i+1))
 	else:
-		os.makedirs("Battles", exist_ok=True)
+		try:
+                    os.mkdir("Battles")
+                except:
+                    pass
 		f = open(os.path.join("Battles", str(i) + ".txt"), "w");
 		f.write(json.dumps(payload).replace("'", "\'"));
 		f.close();
