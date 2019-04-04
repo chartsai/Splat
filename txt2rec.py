@@ -39,7 +39,7 @@ def main():
         data = json.load(f)
 
         os.makedirs("Records", exist_ok=True)
-        sys.stdout = open(os.path.join("Records", str(i) + ".txt"), "w", encoding = 'UTF-8')
+        sys.stdout = open(os.path.join("Records", name), "w", encoding = 'UTF-8')
         
         print("Mode: ", data["rule"])
         print("Result: ", data["result"])

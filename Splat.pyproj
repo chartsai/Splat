@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{4826cecf-77c2-42f6-8f70-2a83f003b3ce}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>splat2txt.py</StartupFile>
+    <StartupFile>txt2rec.py</StartupFile>
     <SearchPath />
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
