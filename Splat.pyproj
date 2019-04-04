@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{4826cecf-77c2-42f6-8f70-2a83f003b3ce}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>splat2txt.py</StartupFile>
+    <StartupFile>txt2rec.py</StartupFile>
     <SearchPath />
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -28,6 +28,12 @@
     <Compile Include="iksm.py" />
     <Compile Include="salmonrun.py" />
     <Compile Include="splat2txt.py" />
+    <Compile Include="txt2rec.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="weapon_name.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
 </Project>
