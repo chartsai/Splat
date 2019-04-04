@@ -26,7 +26,6 @@
   <ItemGroup>
     <Compile Include="dbs.py" />
     <Compile Include="iksm.py" />
-    <Compile Include="salmonrun.py" />
     <Compile Include="splat2txt.py" />
     <Compile Include="txt2rec.py">
       <SubType>Code</SubType>
